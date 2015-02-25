@@ -43,6 +43,18 @@ public class RedisPool {
         }
     }
 
+    public static String getStringKey(String key){
+        String value=null;
+        Jedis jedis=null;
+        try {
+            jedis=getJedis();
+            value=jedis.get(key);
+        }catch (Exception e){
+            returnResource(jedis);
+        }
+        return value;
+    }
+
     public static void returnResource(final Jedis jedis){
         if (jedis!=null){
             jedisPool.returnResource(jedis);

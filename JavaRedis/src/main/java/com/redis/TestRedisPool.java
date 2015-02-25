@@ -13,4 +13,9 @@ public class TestRedisPool {
         jedis.set("pool","success");
         System.out.println(jedis.get("pool"));
     }
+
+    @Test
+    public void testGetKey(){
+        System.out.println(RedisPool.getStringKey("pool"));
+    }
 }
