@@ -2,10 +2,9 @@ package com.redis;
 
 import org.junit.Before;
 import org.junit.Test;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.Pipeline;
-import redis.clients.jedis.Transaction;
+import redis.clients.jedis.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -76,9 +75,35 @@ public class JedisMethod {
         jedis.disconnect();
     }
 
-    /*@Test
-    public void test5shardNormal)(){
+    @Test
+    //about 2.549 seconds ,but this can not add 100000 data ,just about  49000
+    //ready to find why....
+    public void test5shardNormal(){
+        List<JedisShardInfo> shardInfos= Arrays.asList(new JedisShardInfo("localhost",6379),new JedisShardInfo("localhost",6380));
+        ShardedJedis sharding=new ShardedJedis(shardInfos);
+        long start=System.currentTimeMillis();
+        for (int i=0;i<100000;i++){
+            String result=sharding.set("s"+i,"s"+i);
+        }
+        long end=System.currentTimeMillis();
+        System.out.println("Simple Sharding SET:" + ((end - start) / 1000.0) + " seconds");
+        sharding.disconnect();
+    }
 
-    }*/
-
+    @Test
+    //about 1.259 seconds
+    //but this can not add 1000000 datas
+    public void test6shardPipe(){
+        List<JedisShardInfo> shardInfos= Arrays.asList(new JedisShardInfo("localhost",6379),new JedisShardInfo("localhost",6380));
+        ShardedJedis sharding=new ShardedJedis(shardInfos);
+        ShardedJedisPipeline pipeline=sharding.pipelined();
+        long start=System.currentTimeMillis();
+        for (int i=0;i<100000;i++){
+            pipeline.set("sp"+i,"sp"+i);
+        }
+        List<Object> result=pipeline.syncAndReturnAll();
+        long end=System.currentTimeMillis();
+        System.out.println("Shard Pipe SET:"+((end-start)/1000.0)+" seconds");
+        sharding.disconnect();
+    }
 }
