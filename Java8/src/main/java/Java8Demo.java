@@ -3,6 +3,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -72,4 +73,14 @@ public class Java8Demo {
         return x+y;
     }
 
+    @Test
+    public void testFF(){
+        Function<String,String> f1=(x) -> {System.out.print(x + " :");return "F1";};
+        System.out.println(f1.apply("hello"));
+
+        Predicate<String> pre=(x) -> {System.out.print(x); return false;};
+        System.out.println(": "+pre.test("hello"));
+
+
+    }
 }
