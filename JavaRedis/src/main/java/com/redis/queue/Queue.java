@@ -21,20 +21,63 @@ public class Queue {
 
     @Test
     public void  testQueue(){
-        while (true){
-            if (jedis.brpop(100000,"queue").size() > 0){
-                List<String> list=jedis.brpop(100000,"queue");
-                for (String value:list){
-                    System.out.println("get key queue value:"+value);
+            while (true) {
+                /*List<String> all = jedis.lrange("queue", 0, -1);
+                System.out.println("size:" + all.size());
+                for (String s : all) {
+                    System.out.println(s);
+                }*/
+
+                List<String> list = jedis.brpop(0,"queue","queue");
+                System.out.println("brpop size:" + list.size());
+                for (String s:list){
+                    System.out.println("get value:"+s);
                 }
-            }else {
-                System.out.println("there is no queue");
             }
-        }
     }
 
     @Test
-    public void addQueue(){
-        jedis.lpush("queue","wang","ttt");
+    public void lpp(){
+        System.out.println( jedis.rpoplpush("queue", "queue"));
+    }
+
+    @Test
+    public void addQueueSort(){
+        jedis.lpush("queue","I","am","wanglei");
+        jedis.lpush("queue","how","are","your");
+    }
+
+    @Test
+    public void addQueueNoSort(){
+        T1 t1=new T1();
+        T2 t2=new T2();
+        T3 t3=new T3();
+        t1.start();
+        t2.start();
+        t3.start();
+    }
+
+    class T1 extends Thread{
+        @Override
+        public void run() {
+            jedis.lpush("queue","c","d","e");
+            System.out.println("push 2");
+        }
+    }
+
+     class T2 extends Thread{
+        @Override
+        public void run() {
+            jedis.lpush("queue","f","g");
+            System.out.println("push 3");
+        }
+    }
+
+         class T3 extends Thread{
+        @Override
+        public void run() {
+            jedis.lpush("queue","h","j");
+            System.out.println("push 4");
+        }
     }
 }
