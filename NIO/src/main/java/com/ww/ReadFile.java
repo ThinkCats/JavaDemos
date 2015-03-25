@@ -24,7 +24,8 @@ public class ReadFile {
                 System.out.println("data buffer length:"+bytesRead);
                 while (bytesRead != -1){
                     buffer.flip();
-                    while (buffer.hasRemaining()){
+                    buffer.hasRemaining();
+                    while (buffer.position() <buffer.limit()){
                         System.out.print((char) buffer.get());
                     }
                     System.out.println("begin clear buffer for read continue");
