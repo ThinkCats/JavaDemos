@@ -1,9 +1,0 @@
-{"cardNo":"0000002544505064","carNo":"","parkId":"102","inTime":"2015-03-02 13:59:27.0","inDevice":"1","operate":"0"}
-in(zhou):
-{"cardNo":"test99902","carNo":"","parkId":"82","inTime":"2015-03-13 13:59:27.0","inDevice":"1","operate":"0"}
-out(zhou):
-{"fee":"5.0000","cardNo":"test9990","outDevice":"2","carNo":"","parkId":"82","inTime":"2015-03-13 13:59:27.0","operate":"1","feeType":"1","outTime":"2015-03-02 14:02:39.0"}
-in(new):
-{"cardNo":"wangtest","carNo":"","parkId":"82","inTime":"2015-03-02 13:59:27.0","inDevice":"1","operate":"0"}
-out(new):
-{"cardNo":"wangtesta","outDevice":"1","oriFee":"5.0000","carNo":"","parkId":"82","reductFee":"0.0000","inTime":"2015-03-02 13:32:45.0","operate":"1","feeType":"20","outTime":"2015-03-03 14:02:39.0"}
