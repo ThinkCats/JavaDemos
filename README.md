@@ -1,10 +1,12 @@
 # JavaDemos
-(1)A project demo for java redis (Module JavaRedis).
+(1)Java redis (Module JavaRedis).
 
-(2)A project demo for java mongodb(Module MongoDB).
+(2)Java mongodb(Module MongoDB).
 
-(3)A demo for java bit calculate(Module Bit)
+(3)Java bit calculate(Module Bit)
 
-(4)A demo for java annotion(Module Annotion)
+(4)Java annotion(Module Annotion)
 
-(5)A demo for java base algorithm(Module Algorithm )
+(5)Java base algorithm(Module Algorithm )
+
+(6)Java Nio(Module NIO)
