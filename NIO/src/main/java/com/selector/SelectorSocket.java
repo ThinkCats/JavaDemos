@@ -15,73 +15,84 @@ import java.util.Iterator;
  */
 public class SelectorSocket {
 
-    private  int PORT = 8888;
-    private ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
+        private int PORT = 8888;
+        private ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
 
-    @Test
-    public void selectSocket() throws IOException, InterruptedException {
-        System.out.println("listening on port "+PORT);
-        ServerSocketChannel  serverSocketChannel = ServerSocketChannel.open();
-        serverSocketChannel.configureBlocking(false);
+        @Test
+        public void selectSocket() throws IOException, InterruptedException {
+                System.out.println("listening on port " + PORT);
+                ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
+                serverSocketChannel.configureBlocking(false);
 
-        ServerSocket serverSocket = serverSocketChannel.socket();
-        serverSocket.bind(new InetSocketAddress(PORT));
+                ServerSocket serverSocket = serverSocketChannel.socket();
+                serverSocket.bind(new InetSocketAddress(PORT));
 
-        Selector selector = Selector.open();
-        serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
+                Selector selector = Selector.open();
+                serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
 
-        while (true){
-            int n = selector.select();
-            if (n == 0){
-                continue;
-            }
+                while (true) {
+                        int n = selector.select();
+                        if (n == 0) {
+                                continue;
+                        }
 
-            Iterator iterator = selector.selectedKeys().iterator();
-            while (iterator.hasNext()){
-                SelectionKey  key = (SelectionKey) iterator.next();
-                if (key.isAcceptable()){
-                    ServerSocketChannel  server = (ServerSocketChannel) key.channel();
-                    SocketChannel socketChannel = server.accept();
-                    registeChannel(selector,socketChannel,SelectionKey.OP_READ);
-                    sayHello(socketChannel);
+                        Iterator iterator = selector.selectedKeys().iterator();
+                        while (iterator.hasNext()) {
+                                SelectionKey key = (SelectionKey) iterator.next();
+                                if (key.isAcceptable()) {
+                                        ServerSocketChannel server = (ServerSocketChannel) key.channel();
+                                        SocketChannel socketChannel = server.accept();
+                                        registeChannel(selector, socketChannel, SelectionKey.OP_READ);
+                                        registeChannel(selector,socketChannel,SelectionKey.OP_WRITE);
+                                        sayHello(socketChannel);
+                                } else if (key.isReadable()) {
+                                        System.out.println("---------- ready to read -----------");
+                                        readDateFromSocket(key);
+                                } /*else if (key.isWritable()){
+                                        System.out.println("---------- ready write ------------------");
+                                        Scanner scanner = new Scanner(System.in);
+                                        writeDataToSocket(key,scanner.next());
+                                }*/
+                                iterator.remove();
+                        }
                 }
-                else if (key.isReadable()){
-                    System.out.println(" ready to read");
-                    readDateFromSocket(key);
+        }
+
+        private void registeChannel(Selector selector, SelectableChannel channel, int ops) throws IOException {
+                channel.configureBlocking(false);
+                channel.register(selector, ops);
+        }
+
+        private void sayHello(SocketChannel channel) throws IOException {
+                byteBuffer.clear();
+                byteBuffer.put("Hello , You Have Connected on Server !\r\n".getBytes());
+                byteBuffer.flip();
+                channel.write(byteBuffer);
+        }
+
+        private void readDateFromSocket(SelectionKey key) throws IOException {
+                SocketChannel socketChannel = (SocketChannel) key.channel();
+                Socket socket = socketChannel.socket();
+                int count;
+                byteBuffer.clear();
+                while ((count = socketChannel.read(byteBuffer)) > 0) {
+                        System.out.println("the buffer size is > 0");
+                        byteBuffer.flip();
+                        while (byteBuffer.hasRemaining()) {
+                                System.out.print((char) byteBuffer.get());
+                        }
+                        System.out.println(" on Port :" + socket.getPort());
+                        byteBuffer.clear();
                 }
-                iterator.remove();
-            }
+                if (count < 0) {
+                        socketChannel.close();
+                }
         }
-    }
 
-    private void registeChannel(Selector selector,SelectableChannel channel , int ops) throws IOException {
-        channel.configureBlocking(false);
-        channel.register(selector,ops);
-    }
-
-    private void sayHello(SocketChannel channel) throws IOException {
-        byteBuffer.clear();
-        byteBuffer.put("Hello , You Have Connected on Server !".getBytes());
-        byteBuffer.flip();
-        channel.write(byteBuffer);
-    }
-
-    private void readDateFromSocket(SelectionKey key) throws IOException {
-        SocketChannel socketChannel = (SocketChannel) key.channel();
-        Socket socket = socketChannel.socket();
-        int count;
-        byteBuffer.clear();
-        while ((count = socketChannel.read(byteBuffer))>0 ){
-            System.out.println("the buffer size is > 0");
-            byteBuffer.flip();
-            while (byteBuffer.hasRemaining()){
-                System.out.print((char)byteBuffer.get() );
-            }
-            System.out.println(" on Port :"+ socket.getPort());
-            byteBuffer.clear();
+        private void writeDataToSocket(SelectionKey key,String msg) throws IOException {
+                SocketChannel channel = (SocketChannel) key.channel();
+                byteBuffer.put(msg.getBytes());
+                byteBuffer.flip();
+                channel.write(byteBuffer);
         }
-        if (count < 0){
-            socketChannel.close();
-        }
-    }
 }

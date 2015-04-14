@@ -1,4 +1,4 @@
-package com.ww;
+package com.file;
 
 import org.junit.Test;
 
@@ -25,7 +25,7 @@ public class ReadFile {
                 while (bytesRead != -1){
                     buffer.flip();
                     buffer.hasRemaining();
-                    while (buffer.position() <buffer.limit()){
+                    while (buffer.hasRemaining()){
                         System.out.print((char) buffer.get());
                     }
                     System.out.println("begin clear buffer for read continue");
