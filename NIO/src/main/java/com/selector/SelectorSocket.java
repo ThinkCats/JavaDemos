@@ -15,7 +15,7 @@ import java.util.Iterator;
  */
 public class SelectorSocket {
 
-        private int PORT = 8888;
+        private int PORT = 9999;
         private ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
 
         @Test
@@ -43,16 +43,11 @@ public class SelectorSocket {
                                         ServerSocketChannel server = (ServerSocketChannel) key.channel();
                                         SocketChannel socketChannel = server.accept();
                                         registeChannel(selector, socketChannel, SelectionKey.OP_READ);
-                                        registeChannel(selector,socketChannel,SelectionKey.OP_WRITE);
                                         sayHello(socketChannel);
                                 } else if (key.isReadable()) {
                                         System.out.println("---------- ready to read -----------");
                                         readDateFromSocket(key);
-                                } /*else if (key.isWritable()){
-                                        System.out.println("---------- ready write ------------------");
-                                        Scanner scanner = new Scanner(System.in);
-                                        writeDataToSocket(key,scanner.next());
-                                }*/
+                                }
                                 iterator.remove();
                         }
                 }
@@ -85,7 +80,9 @@ public class SelectorSocket {
                         byteBuffer.clear();
                 }
                 if (count < 0) {
+                        System.out.println("begin close socket channel");
                         socketChannel.close();
+                        System.out.println("close socket success");
                 }
         }
 
